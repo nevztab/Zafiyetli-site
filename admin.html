@@ -2,120 +2,45 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yönetim Paneli - Güvenli Giriş</title>
+    <title>Admin Girişi</title>
     <style>
-        /* Matrix / Hacker Teması */
-        body { 
-            background-color: #0d0d0d; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            font-family: 'Courier New', Courier, monospace; 
-            margin: 0; 
-            color: #00ff00; 
-        }
-        .login-kutusu { 
-            border: 1px solid #333; 
-            padding: 40px; 
-            width: 350px; 
-            text-align: center; 
-            box-shadow: 0px 0px 30px rgba(0, 255, 0, 0.1); 
-            background: #111; 
-        }
-        h2 { 
-            margin-bottom: 20px; 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-            border-bottom: 1px solid #333; 
-            padding-bottom: 10px;
-        }
-        input { 
-            width: 90%; 
-            padding: 12px; 
-            margin: 10px 0; 
-            background: #222; 
-            border: 1px solid #444; 
-            color: #00ff00; 
-            font-family: monospace; 
-            outline: none;
-        }
-        input:focus { border-color: #00ff00; }
-        button { 
-            width: 96%; 
-            padding: 12px; 
-            background-color: #008f00; 
-            color: black; 
-            border: none; 
-            cursor: pointer; 
-            font-weight: bold; 
-            font-family: monospace; 
-            font-size: 16px; 
-            margin-top: 10px;
-        }
-        button:hover { background-color: #00ff00; }
-        
-        #hata-kutusu { 
-            display: none; 
-            color: #ff3333; 
-            margin-bottom: 15px; 
-            font-size: 14px; 
-            font-weight: bold;
-        }
+        body { background: #222; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: monospace; }
+        .box { background: #333; padding: 40px; border: 1px solid #444; color: #fff; text-align: center; width: 300px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        input { width: 90%; padding: 10px; margin: 10px 0; background: #000; border: 1px solid #555; color: #0f0; }
+        button { width: 98%; padding: 10px; background: #0f0; color: #000; border: none; font-weight: bold; cursor: pointer; }
+        button:hover { background: #0c0; }
     </style>
 </head>
 <body>
 
-<div class="login-kutusu">
-    <h2>[ ADMIN ACCESS ]</h2>
-    
-    <div id="hata-kutusu"></div>
-
-    <form onsubmit="girisKontrol(event)">
-        <input type="text" id="kullanici" placeholder="USERNAME" autocomplete="off" required>
-        <input type="password" id="sifre" placeholder="PASSWORD" required>
+<div class="box">
+    <h2>SECURE LOGIN</h2>
+    <form onsubmit="girisYap(event)">
+        <input type="text" id="kullanici" placeholder="Username">
+        <input type="password" id="sifre" placeholder="Password">
         <button type="submit">LOGIN</button>
     </form>
+    <p id="hata" style="color:red; display:none; margin-top:10px;">ACCESS DENIED</p>
 </div>
 
 <script>
-    function girisKontrol(e) {
-        e.preventDefault(); // Sayfanın yenilenmesini engelle
+    // Önceki oturumları temizle (Sayfa açılınca çıkış yapmış olsun)
+    localStorage.removeItem('giris_yetkisi');
 
-        const user = document.getElementById("kullanici").value;
-        const pass = document.getElementById("sifre").value;
-        const hataKutusu = document.getElementById("hata-kutusu");
-
-        // --- ZAFİYET KONTROLÜ (Front-end Simülasyonu) ---
-        // Eğer kullanıcı bu karakterleri kullanırsa SQL Injection yapmış sayacağız.
-        const zafiyetTetikleyiciler = ["'", '"', " or ", " OR ", "1=1", "TRUE", "true"];
-        let zafiyetVar = false;
-
-        zafiyetTetikleyiciler.forEach(key => { 
-            if (user.includes(key)) {
-                zafiyetVar = true;
-            }
-        });
-
-        if (zafiyetVar) {
-            // SENARYO: Zafiyet tetiklendi!
-            // Kullanıcıyı sanki sisteme sızmış gibi config sayfasına atıyoruz.
-            alert("⚠️ SYSTEM BREACH DETECTED ⚠️\nBypass başarılı. Yönetim paneline aktarılıyorsunuz...");
+    function girisYap(e) {
+        e.preventDefault();
+        const k = document.getElementById("kullanici").value;
+        const s = document.getElementById("sifre").value;
+        
+        // HASH KIRILINCA BULUNACAK ŞİFRE: "siber123"
+        if (k === "admin" && s === "siber123") {
+            // "Anahtar" veriyoruz. settings.html bunu kontrol edecek.
+            localStorage.setItem('giris_yetkisi', 'tam_yetki_verildi_123');
             
-            // YÖNLENDİRME KOMUTU:
-            window.location.href = "panel-config.html"; 
-            
+            alert("Erişim İzni Verildi. Yönlendiriliyorsunuz...");
+            window.location.href = "settings.html";
         } else {
-            // SENARYO: Normal vatandaş yanlış şifre girdi
-            hataKutusu.style.display = "block";
-            hataKutusu.innerHTML = "ACCESS DENIED: Invalid credentials.";
-            
-            // Giriş kutusunu sarsma efekti (Opsiyonel görsel şov)
-            const kutu = document.querySelector('.login-kutusu');
-            kutu.style.transform = "translateX(5px)";
-            setTimeout(() => { kutu.style.transform = "translateX(-5px)"; }, 50);
-            setTimeout(() => { kutu.style.transform = "translateX(0px)"; }, 100);
+            document.getElementById("hata").style.display = "block";
         }
     }
 </script>
