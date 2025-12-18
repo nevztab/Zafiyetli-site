@@ -1,63 +1,25 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <title>Yönetim Paneli - Gizli Giriş</title>
-    <style>
-        body { background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: monospace; margin: 0; color: #0f0; }
-        .login-kutusu { border: 2px solid #0f0; padding: 40px; width: 400px; text-align: center; box-shadow: 0px 0px 20px #0f0; background: black; }
-        h2 { margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
-        input { width: 90%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #0f0; color: #0f0; font-family: monospace; }
-        button { width: 96%; padding: 12px; background-color: #0f0; color: black; border: none; cursor: pointer; font-weight: bold; font-family: monospace; font-size: 16px; }
-        button:hover { background-color: #0a0; }
-        
-        #hata-kutusu { display: none; background-color: #300; color: #f55; padding: 15px; border: 1px solid red; text-align: left; font-size: 12px; margin-bottom: 15px; word-break: break-all; }
-    </style>
-</head>
-<body>
-
-<div class="login-kutusu">
-    <h2>[ ADMIN ACCESS ]</h2>
-    
-    <div id="hata-kutusu"></div>
-
-    <form onsubmit="girisKontrol(event)">
-        <input type="text" id="kullanici" placeholder="USERNAME" autocomplete="off" required>
-        <input type="password" id="sifre" placeholder="PASSWORD" required>
-        <button type="submit">LOGIN</button>
-    </form>
-</div>
-
 <script>
-    // --- VDS IP ADRESİNİ BURAYA YAZ ---
-    const HEDEF_SUNUCU_IP = "185.XXX.XXX.XXX"; 
-
     function girisKontrol(e) {
         e.preventDefault();
         const user = document.getElementById("kullanici").value;
+        const pass = document.getElementById("sifre").value;
         const hataKutusu = document.getElementById("hata-kutusu");
 
-        // Zafiyet Tetikleyiciler
+        // Zafiyet Tetikleyiciler (SQL Injection)
         const zafiyetTetikleyiciler = ["'", '"', " or ", " OR ", "1=1"];
         let zafiyetVar = false;
 
         zafiyetTetikleyiciler.forEach(key => { if (user.includes(key)) zafiyetVar = true; });
 
         if (zafiyetVar) {
-            hataKutusu.style.display = "block";
-            hataKutusu.innerHTML = `
-                <strong>SYSTEM ALERT: SQL INJECTION DETECTED</strong><br><br>
-                Traceback (most recent call last):<br>
-                File "/var/www/html/admin.php", line 42, in db_connect<br>
-                <strong>OperationalError: (2003, "Can't connect to MySQL server on '${HEDEF_SUNUCU_IP}' (111)")</strong><br>
-                <br>
-                <em>HINT: Port 3306 is open on target host. SSH port might be non-standard.</em>
-            `;
+            // ZAFİYET BAŞARILI!
+            alert("SQL Injection Başarılı! Yönetim paneline aktarılıyorsunuz...");
+            // Hacker'ı hazine sayfasına atıyoruz
+            window.location.href = "panel-config.html"; 
         } else {
-            alert("Erişim Reddedildi. IP Adresiniz Loglandı.");
+            // Normal yanlış şifre
+            hataKutusu.style.display = "block";
+            hataKutusu.innerHTML = "Hatalı kullanıcı adı veya şifre.";
         }
     }
 </script>
-
-</body>
-</html>
