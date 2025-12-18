@@ -2,53 +2,26 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Sistem Yapılandırması - DEBUG MODE</title>
+    <title>Config Dump</title>
     <style>
-        body { background-color: #1e1e1e; color: #00ff00; font-family: 'Courier New', monospace; padding: 40px; }
-        .container { max-width: 800px; margin: 0 auto; border: 2px dashed #444; padding: 20px; }
-        h1 { color: #ff3333; border-bottom: 1px solid #ff3333; padding-bottom: 10px; }
-        .log-entry { margin-bottom: 15px; border-left: 3px solid #00ff00; padding-left: 10px; }
-        .sensitive { color: #ffff00; font-weight: bold; background: #333; padding: 2px 5px; }
-        .highlight { color: cyan; }
+        body { background: #111; color: #0f0; font-family: monospace; padding: 20px; }
+        .box { border: 1px dashed #444; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .imp { color: yellow; font-weight: bold; }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h1>⚠️ SERVER CONFIG DUMP (DEBUG: ON)</h1>
-    <p><strong>UYARI:</strong> Bu sayfa sadece geliştiriciler içindir. Canlıya almadan önce silmeyi unutmayın!</p>
-    <br>
-
-    <div class="log-entry">
-        [INFO] Web Server: Cloudflare Pages (Active)<br>
-        [INFO] Backend Status: <strong>Connection Failed</strong>
-    </div>
-
-    <div class="log-entry">
-        [ERROR] Database Connection Failed.<br>
-        Retrying connection to Host: <span class="sensitive">78.135.85.204</span><br>
-        Port: 3306 (MySQL)<br>
-        Status: Timeout
-    </div>
-
-    <div class="log-entry">
-        [DEBUG] Checking SSH Connectivity...<br>
-        Attempting handshake with user: <span class="highlight">nevzat</span><br>
-        Using cached credentials from config.ini...<br>
+    <div class="box">
+        <h1>⚠️ SERVER CONFIGURATION (DEBUG MODE)</h1>
+        <p>Fatal Error: Database connection lost. Dumping config for debugging...</p>
+        <hr>
+        <p>[DB_CONNECTION]</p>
+        <p>HOST: <span class="imp">78.135.85.204</span></p>
+        <p>PORT: 3306</p>
+        <p>USER: admin</p>
         <br>
-        &gt;&gt; LOADED CONFIG:<br>
-        DB_HOST = <span class="sensitive">78.135.85.204</span><br>
-        SSH_USER = nevzat<br>
-        SSH_PASS = <span class="sensitive">nevzat123</span>  <-- (FIXME: Şifreyi şifrelemeden saklama!)<br>
-        ROOT_ACCESS = False
+        <p>[SSH_BACKUP]</p>
+        <p>USER: <span class="imp">nevzat</span></p>
+        <p>PASS: <span class="imp">nevzat123</span></p>
     </div>
-    
-    <div class="log-entry">
-        [SYSTEM] Critical Error: Cannot mount /var/www/html via SSHFS.<br>
-        Please check if the target server is online.
-    </div>
-
-</div>
-
 </body>
 </html>
